@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 from datetime import timedelta
 
 import pandas as pd
@@ -10,8 +11,13 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
 
-API_KEY = "KH5R8XPV2QNOGX53"
+API_KEY = os.getenv("API_KEY")
 TARGET_SYMBOLS = ["IBM", "AAPL", "AMZN", "GOOG", "MSFT"]
+DB_NAME = os.getenv("DB_NAME")
+DB_USERNAME = os.getenv("DB_USERNAME")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
 
 
 def transform_all_stocks(**kwargs):
@@ -45,11 +51,11 @@ def transform_all_stocks(**kwargs):
 
 def load_data(**kwargs):
     conn = psycopg2.connect(
-        dbname="finance",
-        user="airflow",
-        password="airflow",
-        host="postgres",
-        port="5432",
+        dbname=DB_NAME,
+        user=DB_USERNAME,
+        password=DB_PASSWORD,
+        host=DB_HOST,
+        port=DB_PORT,
     )
     cur = conn.cursor()
 
@@ -101,6 +107,9 @@ def fetch_data(symbol):
 
     r = requests.get(url, params=params)
     data = r.json()
+    if r.status_code != 200:
+        raise "Error"
+
     return data
 
 

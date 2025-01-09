@@ -71,6 +71,13 @@ x-airflow-common:
     # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
     # for other purpose (development, test and especially production usage) build/extend Airflow image.
     _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
+    API_KEY: ${API_KEY}
+    DB_NAME: ${DB_NAME}
+    DB_USERNAME: ${DB_USERNAME}
+    DB_PASSWORD: ${DB_PASSWORD}
+    DB_HOST: ${DB_HOST}
+    DB_PORT: ${DB_PORT}
+
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
@@ -92,6 +99,7 @@ services:
       POSTGRES_DB: airflow
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
+      - ./postgres-init-scripts:/docker-entrypoint-initdb.d/
     healthcheck:
       test: [ "CMD", "pg_isready", "-U", "airflow" ]
       interval: 10s
@@ -292,6 +300,24 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+
+  grafana:
+    image: grafana/grafana:latest
+    user: "0:0"
+    # environment:
+    #   GF_DATABASE_TYPE: postgres
+    #   GF_DATABASE_HOST: postgres:5432
+    #   GF_DATABASE_NAME: finance
+    #   GF_DATABASE_USER: airflow
+    #   GF_DATABASE_PASSWORD: airflow
+    #   GF_DATABASE_SSL_MODE: disable
+    restart: always
+    depends_on:
+      <<: *airflow-common-depends-on
+    ports:
+      - 3111:3000
+    volumes:
+      - ./grafana:/var/lib/grafana
 
 volumes:
   postgres-db-volume:
