@@ -2,6 +2,9 @@ Stock Market ETL and Visualization Project
 
 This project automates the process of fetching, transforming, and visualizing stock market data using modern data engineering tools. The pipeline extracts data from the Alpha Vantage API, processes it, and stores it in PostgreSQL, with visualization handled by Grafana.
 
+![dags](img/dags.png)
+![dashboard](img/dashboard.png)
+
 ## Features
 
 - **ETL Pipeline**: Automated data ingestion, transformation, and loading using Apache Airflow.
