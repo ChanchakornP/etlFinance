@@ -95,6 +95,8 @@ docker-compose up --build
     
 - **Load Data**: Inserts the transformed data into PostgreSQL.
     
+## Future Enhancements
+
 - Integrate Apache Kafka for real-time data ingestion.
     
 - Add Spark for large-scale data processing.
