@@ -78,6 +78,9 @@ docker-compose up --build
 .
 ├── dags/
 │   ├── etl_stock.py          # Airflow DAG definition for ETL
+├── logs/
+├── plugins
+├── config
 ├── postgres-init-scripts/
 │   ├── init.sql              # SQL script to initialize database tables
 ├── .env                      # Environment variables
